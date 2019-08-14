@@ -5,6 +5,9 @@ import cv2
 import imutils
 import requests
 
+FACEDETECT=False
+
+
 video = cv2.VideoCapture(0)
 faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
@@ -18,7 +21,6 @@ def envioimg(image):
     return requests.post(url, files=files, data=data).text
 
 
-
 @app.route('/')
 def index():
     """Video streaming home page."""
@@ -27,7 +29,7 @@ inc=0
 def find_faces(frame):
     global inc
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces_rect = faceCascade.detectMultiScale(gray,  1.4, 5,minSize=(30, 30))    
+    faces_rect = faceCascade.detectMultiScale(gray,  1.1, 5,minSize=(30, 30))    
     if len(faces_rect) == 0:
         inc =0
 
@@ -45,7 +47,8 @@ def gen():
     while True:        
         rval, frame = video.read()        
         frame = imutils.resize(frame, width=400)
-        frame=find_faces(frame)
+        if FACEDETECT ==True:
+            frame=find_faces(frame)
         cv2.imwrite('/tmp/buff.jpg', frame)
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + open('/tmp/buff.jpg', 'rb').read() + b'\r\n')
