@@ -17,6 +17,9 @@ def gen():
     while True:
         rval, frame = video.read()
         frame = imutils.resize(frame, width=400)
+        font = cv2.FONT_HERSHEY_DUPLEX
+        print('test')
+        #cv2.putText(frame, 'Fabio Alberti', (100 + 6,100 - 6), font, 1.0, (255, 255, 255), 1)
         cv2.imwrite('/tmp/buff.jpg', frame)
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + open('/tmp/buff.jpg', 'rb').read() + b'\r\n')
