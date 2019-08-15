@@ -9,6 +9,11 @@ FACEDETECT=False
 
 
 video = cv2.VideoCapture(0)
+video.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+video.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+video.set(cv2.CAP_PROP_FPS, 3)
+
+#video.set(cv2.CV_CAP_PROP_FPS, 10)
 faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
 app = Flask(__name__)
@@ -28,6 +33,7 @@ def index():
 inc=0
 def find_faces(frame):
     global inc
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces_rect = faceCascade.detectMultiScale(gray,  1.1, 5,minSize=(30, 30))    
     if len(faces_rect) == 0:
@@ -37,7 +43,7 @@ def find_faces(frame):
     for (x, y, w, h) in faces_rect:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 1)
         inc =inc+1
-    if inc ==5:
+    if inc ==2:
         cv2.imwrite(str(w) + str(h) + '_faces.jpg', frame)
         print(envioimg(str(w) + str(h) + '_faces.jpg'))
 
@@ -46,7 +52,7 @@ def find_faces(frame):
 def gen():    
     while True:        
         rval, frame = video.read()        
-        frame = imutils.resize(frame, width=400)
+        #frame = imutils.resize(frame, width=400)
         if FACEDETECT ==True:
             frame=find_faces(frame)
         cv2.imwrite('/tmp/buff.jpg', frame)
@@ -60,4 +66,4 @@ def video_feed():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=False, threaded=True)
+    app.run(host='0.0.0.0', debug=False, threaded=False)
