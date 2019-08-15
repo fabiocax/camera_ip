@@ -5,13 +5,15 @@ import cv2
 import imutils
 import requests
 
-FACEDETECT=False
+FACEDETECT=True
 
 
 video = cv2.VideoCapture(0)
+# List https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html
 video.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 video.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 video.set(cv2.CAP_PROP_FPS, 3)
+video.set(cv2.CAP_PROP_CONTRAST,11)
 
 #video.set(cv2.CV_CAP_PROP_FPS, 10)
 faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
@@ -33,7 +35,6 @@ def index():
 inc=0
 def find_faces(frame):
     global inc
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces_rect = faceCascade.detectMultiScale(gray,  1.1, 5,minSize=(30, 30))    
     if len(faces_rect) == 0:
