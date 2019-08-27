@@ -4,6 +4,7 @@ from flask import Flask, render_template, Response
 import cv2
 import imutils
 import requests
+import threading
 
 FACEDETECT=True
 
@@ -33,6 +34,8 @@ def index():
     """Video streaming home page."""
     return render_template('index.html')
 inc=0
+
+
 def find_faces(frame):
     global inc
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -46,6 +49,7 @@ def find_faces(frame):
         inc =inc+1
     if inc ==2:
         cv2.imwrite(str(w) + str(h) + '_faces.jpg', frame)
+        
         print(envioimg(str(w) + str(h) + '_faces.jpg'))
 
     return frame
